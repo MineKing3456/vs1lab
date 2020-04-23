@@ -2,7 +2,57 @@ body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+header{
+  background-color:gray;
+}
+footer{
+  background-color: gray;
+}
+li{
+  color:white;
+  background-color:lightskyblue;
+  margin:5px;
+}
+input{
+  height:24px;
+  width:200px;
+}
+input[type=submit]{
+  height:auto;
+  width:auto;
+}
 
 a {
   color: #00B7FF;
 }
+@media screen and (min-width: 1000px ) {
+  main {
+    display: flex;
+    justify-content: stretch;
+  }
+
+  .flex {
+    display: flex;
+    justify-content: stretch;
+  }
+
+  .taglist {
+    flex-grow: 4;
+  }
+
+  .tagmap {
+    flex-grow: 6;
+  }
+
+  .discovery {
+    display: inline;
+    flex-grow: 10;
+  }
+
+  .tagging {
+    display: block;
+    flex-grow: 2;
+  }
+}
+.discovery{display:inline;}
+.tagging{display: block;}

@@ -120,22 +120,31 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         readme: "Dieses Objekt enthält 'öffentliche' Teile des Moduls.",
 
         updateLocation: function() {
-          tryLocate(
-             function(position){
-                 document.getElementById("Latitude").value=getLatitude(position);
-                 document.getElementById("Longtitude").value=getLongitude(position);
-                 document.getElementById("LatitudeSearch").value=getLatitude(position);
-                 document.getElementById("LongtitudeSearch").value=getLongitude(position);
-                 document.getElementById("result-img").src=getLocationMapSrc(
-                     getLatitude(position),getLongitude(position), undefined, undefined);
-             },
-             function(msg){
-                 alert(msg);
-             }
-          );
 
-            // TODO Hier Inhalt der Funktion "update" ergänzen
+            if(document.getElementById("i_Latitude").value != "" && document.getElementById("i_Longitude").value != ""){
+                //alert("in first if");
+                document.getElementById("result-img").src = getLocationMapSrc((document.getElementById("i_Latitude").value
+                ), document.getElementById("i_Longitude").value, undefined, undefined);
+            }else{
+
+                //alert("in second else (trylocate)");
+                tryLocate(
+                    function (position) {
+                        document.getElementById("i_Latitude").value = getLatitude(position);
+                        document.getElementById("i_Longitude").value = getLongitude(position);
+                        document.getElementById("LatitudeSearch").value = getLatitude(position);
+                        document.getElementById("LongitudeSearch").value = getLongitude(position);
+                        document.getElementById("result-img").src = getLocationMapSrc(
+                            getLatitude(position), getLongitude(position), undefined, undefined);
+                    },
+                    function (msg) {
+                        alert(msg);
+                    }
+                );
+            }
         }
+            // TODO Hier Inhalt der Funktion "update" ergänzen
+
 
     }; // ... Ende öffentlicher Teil
 })(GEOLOCATIONAPI);

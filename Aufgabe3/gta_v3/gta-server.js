@@ -146,7 +146,7 @@ app.set('view engine', 'ejs');
 
 app.get('/', function(req, res) {
     res.render('gta', {
-        taglist: [], latitude:undefined, longitude: undefined
+        taglist: [], latitude:undefined, longitude: undefined, //jsonstring: JSON.stringify([])
     });
 });
 
@@ -169,7 +169,9 @@ app.get('/', function(req, res) {
        GeoTagModule.addNewTag(req.body.i_Latitude,req.body.i_Longitude,req.body.i_Name,req.body.i_Hashtag);
         console.log(GeoTagModule.getGeoTagArray());
        res.render('gta', {taglist: GeoTagModule.searchRadius(req.body.i_Latitude,req.body.i_Longitude,10),
-           latitude:req.body.i_Latitude,longitude:req.body.i_Longitude});
+           latitude:req.body.i_Latitude,longitude:req.body.i_Longitude,// jsonstring : JSON.stringify(
+            //   GeoTagModule.searchRadius(req.body.i_Latitude,req.body.i_Longitude,10))
+       });
    });
 
 
@@ -190,11 +192,14 @@ app.get('/', function(req, res) {
        console.log(GeoTagModule.getGeoTagArray());
        if(req.body.Suche == "") {
            res.render('gta', {taglist: GeoTagModule.searchRadius(req.body.latitude,req.body.longitude,10),
-               latitude:req.body.latitude,longitude:req.body.longitude});
+               latitude:req.body.latitude,longitude:req.body.longitude, //jsonstring: JSON.stringify(
+                  // GeoTagModule.searchRadius(req.body.latitude,req.body.longitude,10))
+           });
        }else{
            res.render('gta', {taglist : GeoTagModule.searchName(req.body.Suche),
                latitude: req.body.latitude,
                longitude: req.body.longitude
+               //jsonstring: JSON.stringify(GeoTagModule.searchName(req.body.Suche))
 
                });
 

@@ -122,9 +122,11 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
         updateLocation: function() {
 
             var taglist_json = document.getElementById("result-img").getAttribute("data-tags");
-            alert(taglist_json);
+            //alert(taglist_json);
+            //alert("Lan:"+document.getElementById("LatitudeSearch").value+" lon:"+document.getElementById("LongitudeSearch").value);
 
-            if(document.getElementById("i_Latitude").value != "" && document.getElementById("i_Longitude").value != ""){
+
+            if(document.getElementById("LatitudeSearch").value != "" && document.getElementById("LongitudeSearch").value != ""){
                 //alert("in first if");
                 document.getElementById("result-img").src = getLocationMapSrc((document.getElementById("i_Latitude").value
                 ), document.getElementById("i_Longitude").value,
@@ -139,7 +141,7 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
                         document.getElementById("LatitudeSearch").value = getLatitude(position);
                         document.getElementById("LongitudeSearch").value = getLongitude(position);
                         document.getElementById("result-img").src = getLocationMapSrc(
-                            getLatitude(position), getLongitude(position), undefined, undefined);
+                            getLatitude(position), getLongitude(position), JSON.parse(taglist_json), undefined);
                     },
                     function (msg) {
                         alert(msg);
@@ -159,6 +161,6 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
  * des Skripts.
  */
 $(function() {
-    alert("Please change the script 'geotagging.js'");
+    //alert("Please change the script 'geotagging.js'");
     gtaLocator.updateLocation();
 });

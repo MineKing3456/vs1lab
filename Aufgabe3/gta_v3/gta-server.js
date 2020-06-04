@@ -102,9 +102,9 @@ app.set('view engine', 'ejs');
                  var resultArray = [];
 
                  for (var i = 0; i < GeoTagArray.length; i++) {
-                     if (GeoTagArray[i].name == searchterm) {
+                     if (GeoTagArray[i].name.indexOf(searchterm)>=0) {
                          resultArray.push(GeoTagArray[i]);
-                     } else if (GeoTagArray[i].hashtag ==searchterm ) {
+                     } else if (GeoTagArray[i].hashtag.indexOf(searchterm)) {
                          resultArray.push(GeoTagArray[i]);
                      }
                  }
@@ -191,14 +191,14 @@ app.get('/', function(req, res) {
    app.post ('/discovery', function(req,res){
        console.log(GeoTagModule.getGeoTagArray());
        if(req.body.Suche == "") {
-           res.render('gta', {taglist: GeoTagModule.searchRadius(req.body.latitude,req.body.longitude,10),
-               latitude:req.body.latitude,longitude:req.body.longitude, //jsonstring: JSON.stringify(
+           res.render('gta', {taglist: GeoTagModule.searchRadius(req.body.LatitudeSearch,req.body.LongitudeSearch,10),
+               latitude:req.body.LatitudeSearch,longitude:req.body.LongitudeSearch, //jsonstring: JSON.stringify(
                   // GeoTagModule.searchRadius(req.body.latitude,req.body.longitude,10))
            });
        }else{
            res.render('gta', {taglist : GeoTagModule.searchName(req.body.Suche),
-               latitude: req.body.latitude,
-               longitude: req.body.longitude
+               latitude: req.body.LatitudeSearch,
+               longitude: req.body.LongitudeSearch
                //jsonstring: JSON.stringify(GeoTagModule.searchName(req.body.Suche))
 
                });

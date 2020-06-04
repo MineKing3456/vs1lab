@@ -102,9 +102,9 @@ app.set('view engine', 'ejs');
                  var resultArray = [];
 
                  for (var i = 0; i < GeoTagArray.length; i++) {
-                     if (GeoTagArray[i].name.indexOf(searchterm)>=0) {
+                     if (GeoTagArray[i].name.indexOf(searchterm)!=-1) {
                          resultArray.push(GeoTagArray[i]);
-                     } else if (GeoTagArray[i].hashtag.indexOf(searchterm)) {
+                     } else if (GeoTagArray[i].hashtag.indexOf(searchterm)!=-1) {
                          resultArray.push(GeoTagArray[i]);
                      }
                  }

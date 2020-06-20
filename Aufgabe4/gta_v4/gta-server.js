@@ -14,12 +14,15 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var express = require('express');
 
+
 var app;
 app = express();
+
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+
 
 // Setze ejs als View Engine
 app.set('view engine', 'ejs');
@@ -29,7 +32,7 @@ app.set('view engine', 'ejs');
  * Teste das Ergebnis im Browser unter 'http://localhost:3000/'.
  */
 
-
+   app.set('views', __dirname + '/public/views');
    app.use(express.static(__dirname +"/public"));
 
 /**

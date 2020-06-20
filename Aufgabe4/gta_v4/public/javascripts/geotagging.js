@@ -2,11 +2,26 @@
 
 // Befehle werden sequenziell abgearbeitet ...
 
+
+
 /**
  * "console.log" schreibt auf die Konsole des Browsers
  * Das Konsolenfenster muss im Browser explizit geöffnet werden.
  */
 console.log("The script is going to start...");
+
+
+function GeoTag(latitude,longitude,name,hashtag){
+    this.latitude=latitude;
+    this.longitude=longitude;
+    this.name=name;
+    this.hashtag=hashtag;
+    console.log('Neues Geo Tag mit den werten' +this.latitude + ' ' + this.longitude + ' ' + this.name + ' '  + this.hashtag + '  erstellt');
+
+    this.toString=function () {
+        return this.name+" ("+this.latitude+","+this.longitude+") "+this.hashtag;
+    }
+    }
 
 // Es folgen einige Deklarationen, die aber noch nicht ausgeführt werden ...
 
@@ -154,6 +169,28 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
 
     }; // ... Ende öffentlicher Teil
 })(GEOLOCATIONAPI);
+/**
+ * Update Tags soll die Tags aktualisieren, wenn der EventListener "triggert"
+ */
+updateTags = function(taglist_json){
+    document.getElementBYId("result-img").src = getLocationMapSrc(document.getElementById("LatitudeSearch").value,
+        document.getElementById("LongitudeSearch").value, JSON.parse(taglist_json), undefined );
+}
+
+var update = function(){
+    var addTodosToList = function(geotags){
+        var results = document.getElementById("results");
+        while(results.hasChildNodes()){
+            results.removeChild(results.firstChild);
+        }
+        for (var key in geotags){
+            var li = document.createElement("li");
+            li.innerHTML = "TODO: " + geotags[key].message;
+            results.appendChild(li);
+        }
+    };
+}
+
 
 /**
  * $(function(){...}) wartet, bis die Seite komplett geladen wurde. Dann wird die
@@ -161,6 +198,41 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
  * des Skripts.
  */
 $(function() {
+
+    document.getElementById("taggingbutton").addEventListener("click",function(event){
+        alert("Eventlistener FEUERT at Tagging");
+        event.preventDefault();
+        var ajax = new XMLHttpRequest();
+        ajax.onreadystatechange = function(){
+            if(ajax.readyState=4){
+                updateTags(ajax.responseText);
+            }
+        }
+        ajax.open("POST","url" ,true);
+        ajax.setRequestHeader("Content-Type", "application/json");
+        ajax.send(JSON.stringify(new GeoTag(document.getElementById("i_Latitude").value,
+            document.getElementById("i_Longitude").value,
+            document.getElementById("i_Name").value,
+            document.getElementById("i_Hashtag").value)))
+
+
+
+    });
+
+    document.getElementById("discoverybutton").addEventListener("click",function(event){
+        alert("Eventlistener FEUERT at Discovery");
+        event.preventDefault();
+        var ajax = new XMLHttpRequest();
+        ajax.onreadystatechange = function(){
+            if(ajax.readyState == 4){
+                updateTags(ajax.responseText);
+            }
+        }
+        ajax.open("GET", "url" + "?Suche="+document.getElementById("Suche").value, true);
+
+        //ajax.s
+
+    })
     //alert("Please change the script 'geotagging.js'");
     gtaLocator.updateLocation();
 });

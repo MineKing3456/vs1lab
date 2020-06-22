@@ -13,6 +13,7 @@ var http = require('http');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var express = require('express');
+var url = require("url")
 
 
 var app;
@@ -22,6 +23,7 @@ app.use(logger('dev'));
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+app.use(bodyParser.json());
 
 
 // Setze ejs als View Engine
@@ -137,6 +139,39 @@ app.set('view engine', 'ejs');
 
         //GeoTagArray = GeoTagArray + new GeoTag(latitude, longitude, name, hashtag)
 })();
+/**
+ * Route mit Pfad   '/geotags' für HTTP 'Post' Requests
+ * enthält im body die Parameter als json string
+  */
+app.post('/geotags',function (req,res) {
+    console.log("Dies ist der /geotags pfad");
+    GeoTagModule.addNewTag(req.body.latitude, req.body.longitude, req.body.name, req.body.hashtag);
+    console.log(GeoTagModule.getGeoTagArray());
+    console.log("Dies ist der /geotags pfad");
+    res.send(JSON.stringify(GeoTagModule.getGeoTagArray())) ;
+
+})
+/**
+ * Route mit Pfad '/geotags' für HTTP 'GET' netohoden mit query- parametern
+ */
+app.get('/geotags', function (req,res) {
+    console.log('dies soll der Pfad mit query parametern sein')
+    var query = url.parse(req.url, true).query;
+    if(query["Suche"] !== undefined){
+        console.log(JSON.stringify(GeoTagModule.searchName(query["Suche"])));
+        console.log("in if")
+        res.send(JSON.stringify(GeoTagModule.searchName(query["Suche"])));
+
+
+    }else{
+        console.log(JSON.stringify(GeoTagModule.getGeoTagArray()));
+        console.log("in else")
+        res.send(JSON.stringify(GeoTagModule.getGeoTagArray()));
+    }
+    //res.send( )
+}
+
+)
 
 /**
  * Route mit Pfad '/' für HTTP 'GET' Requests.

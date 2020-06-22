@@ -141,12 +141,12 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
             //alert("Lan:"+document.getElementById("LatitudeSearch").value+" lon:"+document.getElementById("LongitudeSearch").value);
 
 
-            if(document.getElementById("LatitudeSearch").value != "" && document.getElementById("LongitudeSearch").value != ""){
+            if (document.getElementById("LatitudeSearch").value != "" && document.getElementById("LongitudeSearch").value != "") {
                 //alert("in first if");
                 document.getElementById("result-img").src = getLocationMapSrc((document.getElementById("i_Latitude").value
-                ), document.getElementById("i_Longitude").value,
+                    ), document.getElementById("i_Longitude").value,
                     JSON.parse(taglist_json), undefined);
-            }else{
+            } else {
 
                 //alert("in second else (trylocate)");
                 tryLocate(
@@ -163,33 +163,41 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
                     }
                 );
             }
+        },
+
+
+            updateTags : function(taglist_json) {
+            alert(taglist_json + " in der Funktion update Tags");
+            var geotags = JSON.parse(taglist_json);
+                document.getElementById("result-img").src = getLocationMapSrc(document.getElementById("i_Latitude").value,
+                    document.getElementById("i_Longitude").value, geotags, undefined);
+
+                var results = document.getElementById("results");
+                while (results.hasChildNodes()) {
+                    results.removeChild(results.firstChild);
+                }
+                for (var key in geotags) {
+                    var li = document.createElement("li");
+                    //TODO innerhtml richtig machen;
+                    li.innerHTML = geotags[key].name+" ("+geotags[key].latitude+" , "+geotags[key].longitude+") "+geotags[key].hashtag;
+                    results.appendChild(li);
+                }
+
+
+
+
         }
+
+
 
 
 
     }; // ... Ende öffentlicher Teil
 })(GEOLOCATIONAPI);
-/**
- * Update Tags soll die Tags aktualisieren, wenn der EventListener "triggert"
- */
-updateTags = function(taglist_json){
-    document.getElementBYId("result-img").src = getLocationMapSrc(document.getElementById("LatitudeSearch").value,
-        document.getElementById("LongitudeSearch").value, JSON.parse(taglist_json), undefined );
-}
 
-var update = function(){
-    var addTodosToList = function(geotags){
-        var results = document.getElementById("results");
-        while(results.hasChildNodes()){
-            results.removeChild(results.firstChild);
-        }
-        for (var key in geotags){
-            var li = document.createElement("li");
-            li.innerHTML = "TODO: " + geotags[key].message;
-            results.appendChild(li);
-        }
-    };
-}
+
+
+
 
 
 /**
@@ -204,11 +212,15 @@ $(function() {
         event.preventDefault();
         var ajax = new XMLHttpRequest();
         ajax.onreadystatechange = function(){
-            if(ajax.readyState=4){
-                updateTags(ajax.responseText);
+            if(ajax.readyState==4){
+
+                alert(ajax.responseText);
+
+                gtaLocator.updateTags(ajax.responseText);
             }
         }
-        ajax.open("POST","url" ,true);
+        ajax.open("POST",'/geotags'
+            ,true);
         ajax.setRequestHeader("Content-Type", "application/json");
         ajax.send(JSON.stringify(new GeoTag(document.getElementById("i_Latitude").value,
             document.getElementById("i_Longitude").value,
@@ -225,12 +237,14 @@ $(function() {
         var ajax = new XMLHttpRequest();
         ajax.onreadystatechange = function(){
             if(ajax.readyState == 4){
-                updateTags(ajax.responseText);
+
+                alert(ajax.responseText);
+                gtaLocator.updateTags(ajax.responseText);
             }
         }
-        ajax.open("GET", "url" + "?Suche="+document.getElementById("Suche").value, true);
+        ajax.open("GET", "/geotags?Suche="+document.getElementById("Suche").value, true);
 
-        //ajax.s
+        ajax.send(null);
 
     })
     //alert("Please change the script 'geotagging.js'");

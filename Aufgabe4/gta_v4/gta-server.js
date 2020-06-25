@@ -87,6 +87,9 @@ app.set('view engine', 'ejs');
              }
 
     return {
+        overwriteTag:function(latitude,longitude, name, hashtag, id){
+            GeoTagArray[id] = new GeoTag(latitude,longitude,name,hashtag);
+        }   ,
         addNewTag: function(latitude, longitude, name, hashtag)
              {
                  GeoTagArray.push(new GeoTag(latitude, longitude, name, hashtag));
@@ -116,14 +119,9 @@ app.set('view engine', 'ejs');
                  return resultArray;
              },
 
-             remove: function(searchterm) {
+             remove: function(id) {
                  //resultArray = [];
-                 for (var i = 0; i < GeoTagArray.length; i++) {
-                     if (GeoTagArray[i].name == searchterm) {
-                         GeoTagArray.splice(i, 1);
-                         return 0;
-                     }
-                 }
+                 GeoTagArray.splice(id,1);
              },
 
              getGeoTagArray: function() {
@@ -142,15 +140,68 @@ app.set('view engine', 'ejs');
 /**
  * Route mit Pfad   '/geotags' für HTTP 'Post' Requests
  * enthält im body die Parameter als json string
+ * Der JSON String im Body vom REST CLIENT muss folgendermaßen aufgebaut sein:
+ * {"latitude":"ZAHL","longitude":"ZAHL","name":"NAME","hashtag":"#HASHTAG"}
   */
 app.post('/geotags',function (req,res) {
     console.log("Dies ist der /geotags pfad");
+    console.log(req.body);
     GeoTagModule.addNewTag(req.body.latitude, req.body.longitude, req.body.name, req.body.hashtag);
     console.log(GeoTagModule.getGeoTagArray());
-    console.log("Dies ist der /geotags pfad");
+    res.status(201);
+
     res.send(JSON.stringify(GeoTagModule.getGeoTagArray())) ;
 
 })
+/**
+ * Route mit Pfad geotags und ID für HTTP 'Get' methoden
+ */
+app.get('/geotags/:id', function(req,res){
+    var gesuchtesTag = GeoTagModule.getGeoTagArray()[req.params.id];
+    if(gesuchtesTag!== undefined){
+    console.log("dies soll der Pfad mit ID sein");
+
+    console.log(gesuchtesTag);
+    res.send(JSON.stringify(gesuchtesTag));
+    }else{
+        res.status(410);
+        res.send("This Geotag does not exist");
+    }
+})
+/**
+ * Route mit Pfad geotags und ID für HTTP 'PUT' methoden
+ * Der JSON String im Body vom REST CLIENT muss folgendermaßen aufgebaut sein:
+ * {"latitude":"ZAHL","longitude":"ZAHL","name":"NAME","hashtag":"#HASHTAG"}
+ */
+app.put('/geotags/:id',function(req,res) {
+
+    var gesuchtesTag = GeoTagModule.getGeoTagArray()[req.params.id];
+    if(gesuchtesTag!== undefined) {
+        console.log(req.latitude);
+        console.log(req.body.latitude + " " +req.body.longitude +" " + req.body.name + " " + req.body.hashtag);
+        GeoTagModule.overwriteTag(req.body.latitude, req.body.longitude, req.body.name, req.body.hashtag, req.params.id);
+
+        res.send('updated' + JSON.stringify(gesuchtesTag) + " to " + JSON.stringify(GeoTagModule.getGeoTagArray()[req.params.id]));
+    }else{
+        res.status(410);
+        res.send("This Geotag doesn't exist anymore, try POST without ID instead");
+    }
+})
+
+/**
+ * Route mit Pfad geotags und ID für http 'Delete' methoden
+ */
+app.delete('/geotags/:id', function(req,res){
+    var gesuchtesTag = GeoTagModule.getGeoTagArray()[req.params.id];
+    if(gesuchtesTag!== undefined){
+    GeoTagModule.remove(req.params.id);
+    res.send("deleted");
+    }else{
+        res.status(410);
+        res.send("This Geotag doesn't exist anymore");
+    }
+})
+
 /**
  * Route mit Pfad '/geotags' für HTTP 'GET' netohoden mit query- parametern
  */
@@ -160,6 +211,7 @@ app.get('/geotags', function (req,res) {
     if(query["Suche"] !== undefined){
         console.log(JSON.stringify(GeoTagModule.searchName(query["Suche"])));
         console.log("in if")
+
         res.send(JSON.stringify(GeoTagModule.searchName(query["Suche"])));
 
 

@@ -178,7 +178,6 @@ var gtaLocator = (function GtaLocator(geoLocationApi) {
                 }
                 for (var key in geotags) {
                     var li = document.createElement("li");
-                    //TODO innerhtml richtig machen;
                     li.innerHTML = geotags[key].name+" ("+geotags[key].latitude+" , "+geotags[key].longitude+") "+geotags[key].hashtag;
                     results.appendChild(li);
                 }
@@ -226,6 +225,10 @@ $(function() {
             document.getElementById("i_Longitude").value,
             document.getElementById("i_Name").value,
             document.getElementById("i_Hashtag").value)))
+    /*    alert(JSON.stringify(new GeoTag(document.getElementById("i_Latitude").value,
+            document.getElementById("i_Longitude").value,
+            document.getElementById("i_Name").value,
+            document.getElementById("i_Hashtag").value))); */
 
 
 
